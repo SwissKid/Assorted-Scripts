@@ -1,0 +1,29 @@
+#!/bin/bash
+##This script requires figlet for it to work correclty.
+##This script will make a figlet annoyance scroll across the screen while flashing colors
+origtext=$@
+text=$origtext
+checkwide=$(figlet -t "$text" | tail -n 2)
+width=${#checkwide}
+currwidth=$(figlet -t "$text" | tail -n 2)
+function nextcolor(){
+if [ "$color" -le 5 ];then
+	color=$(($color + 1))
+else
+	color=1
+fi
+}
+while [ "${#currwidth}" -ge "$width" ]; do
+	tput setf $color
+	nextcolor
+	figlet -t "$text"
+	sleep 0.1
+	clear
+	figlet -St "${text~~}"
+	sleep 0.1
+	clear
+	text="  $text"
+	tput setf $color
+	nextcolor
+	currwidth=$(figlet -t "$text" | tail -n 2)
+done
